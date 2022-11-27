@@ -177,7 +177,7 @@ int __cdecl main()
     }
    
     FILE* fd = NULL;
-    fopen_s(&fd,"Redecorate.mp3", "wb");
+    fopen_s(&fd, "Redecorate.mp3", "wb");
     if (fd == NULL) {
         perror("fopen");
         return 1;
@@ -197,7 +197,7 @@ int __cdecl main()
         } else {
             totalReceived += 1;
         }
-        std::cout << "Received total %d kBytes" << totalReceived << std::endl;
+        std::cout << "Received total %f kBytes" << totalReceived << std::endl;
         fwrite(buff, sizeof(char), lengthReceived, fd);
     } while (lengthReceived == 1024);
 
