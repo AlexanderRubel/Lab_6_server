@@ -6,10 +6,11 @@
 #include <WinSock2.h>
 #include <ws2bth.h>
 #include <stdio.h>
-#include <iostream>
 #include <vector>
 #include <initguid.h>
 #include <strsafe.h>
+#include <fstream>
+#include <iostream>
 
 #include "Device.h"
 
@@ -174,15 +175,27 @@ int __cdecl main()
         ulRetCode = CXN_ERROR;
     }
 
+    std::ofstream outfile;
+    outfile.open("Redecorate.mp3", std::ios::out | std::ios::trunc);
+
     SOCKET ClientSocket = INVALID_SOCKET;
     ClientSocket = accept(LocalSocket, NULL, NULL);
     /* User code ends here */
-    char buff[7] = {};
-    int iLengthReceived = recv(ClientSocket,
-        (char*)buff, 7, 0);
+    int lengthReceived = 0;
+    float totalReceived = 0;
+    do {
+        unsigned char buff[1024] = {};
+        lengthReceived = recv(ClientSocket, (char*)buff, 1024, 0);
+        if (lengthReceived < 1024) {
+            totalReceived += lengthReceived / 1024;
+        } else {
+            totalReceived += 1;
+        }
+        std::cout << "Received total %d kBytes" << totalReceived << std::endl;
+        outfile << buff;
+    } while (lengthReceived == 1024);
 
-    std::cout << "________________________" << std::endl;
-    std::cout << buff << std::endl;
+    outfile.close();
 
     if (closesocket(ClientSocket)) {
         wprintf(L"=CRITICAL= | closesocket() call failed w/socket = [0x%I64X]. WSAGetLastError=[%d]\n", (ULONG64)ClientSocket, WSAGetLastError());
