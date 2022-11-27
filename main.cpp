@@ -192,14 +192,10 @@ int __cdecl main()
     do {
         unsigned char buff[1024] = {};
         lengthReceived = recv(ClientSocket, (char*)buff, 1024, 0);
-        if (lengthReceived < 1024) {
-            totalReceived += lengthReceived / 1024;
-        } else {
-            totalReceived += 1;
-        }
-        std::cout << "Received total %f kBytes" << totalReceived << std::endl;
+        totalReceived += lengthReceived / 1024;
+        std::cout << "Received total kBytes: " << totalReceived << std::endl;
         fwrite(buff, sizeof(char), lengthReceived, fd);
-    } while (lengthReceived == 1024);
+    } while (lengthReceived > 0);
 
     fclose(fd);
 
