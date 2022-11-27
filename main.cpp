@@ -177,7 +177,7 @@ int __cdecl main()
     }
    
     FILE* fd = NULL;
-    fd = fopen("Redecorate.mp3", "wb");
+    fopen_s(&fd,"Redecorate.mp3", "wb");
     if (fd == NULL) {
         perror("fopen");
         return 1;
