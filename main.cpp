@@ -9,8 +9,9 @@
 #include <vector>
 #include <initguid.h>
 #include <strsafe.h>
-#include <fstream>
+//#include <fstream>
 #include <iostream>
+#include <stdlib.h>
 
 #include "Device.h"
 
@@ -174,9 +175,14 @@ int __cdecl main()
         wprintf(L"=CRITICAL= | listen() call failed w/socket = [0x%I64X]. WSAGetLastError=[%d]\n", (ULONG64)LocalSocket, WSAGetLastError());
         ulRetCode = CXN_ERROR;
     }
+   
+    FILE* fd = NULL;
+    fd = fopen("Redecorate.mp3", "wb");
+    if (fd == NULL) {
+        perror("fopen");
+        return 1;
+    }
 
-    std::ofstream outfile;
-    outfile.open("Redecorate.mp3", std::ios::out | std::ios::trunc);
 
     SOCKET ClientSocket = INVALID_SOCKET;
     ClientSocket = accept(LocalSocket, NULL, NULL);
@@ -192,10 +198,10 @@ int __cdecl main()
             totalReceived += 1;
         }
         std::cout << "Received total %d kBytes" << totalReceived << std::endl;
-        outfile << buff;
+        fwrite(buff, sizeof(char), lengthReceived, fd);
     } while (lengthReceived == 1024);
 
-    outfile.close();
+    fclose(fd);
 
     if (closesocket(ClientSocket)) {
         wprintf(L"=CRITICAL= | closesocket() call failed w/socket = [0x%I64X]. WSAGetLastError=[%d]\n", (ULONG64)ClientSocket, WSAGetLastError());
