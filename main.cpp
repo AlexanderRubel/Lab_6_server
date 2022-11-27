@@ -80,7 +80,7 @@ int __cdecl main()
 
     
 
-    /* Run client mode */
+    /* Run server mode */
     /* Creating SOCKET */
     LPCSADDR_INFO   lpCSAddrInfo = NULL;
     lpCSAddrInfo = (LPCSADDR_INFO)HeapAlloc(GetProcessHeap(),
@@ -181,6 +181,9 @@ int __cdecl main()
     int iLengthReceived = recv(ClientSocket,
         (char*)buff, 7, 0);
 
+    std::cout << "________________________" << std::endl;
+    std::cout << buff << std::endl;
+
     if (closesocket(ClientSocket)) {
         wprintf(L"=CRITICAL= | closesocket() call failed w/socket = [0x%I64X]. WSAGetLastError=[%d]\n", (ULONG64)ClientSocket, WSAGetLastError());
     }
@@ -191,5 +194,6 @@ int __cdecl main()
 
     WSACleanup();
 
+    system("pause");
     return 0;
 }
