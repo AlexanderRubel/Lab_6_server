@@ -12,6 +12,7 @@
 //#include <fstream>
 #include <iostream>
 #include <stdlib.h>
+#include <ShellAPI.h>
 
 #include "Device.h"
 
@@ -177,7 +178,7 @@ int __cdecl main()
     }
    
     FILE* fd = NULL;
-    fopen_s(&fd, "Redecorate.mp3", "wb");
+    fopen_s(&fd, "music.mp3", "wb");
     if (fd == NULL) {
         perror("fopen");
         return 1;
@@ -192,10 +193,12 @@ int __cdecl main()
     do {
         unsigned char buff[1024] = {};
         lengthReceived = recv(ClientSocket, (char*)buff, 1024, 0);
-        totalReceived += lengthReceived / 1024;
+        totalReceived += (float)lengthReceived / 1024.0;
         std::cout << "Received total kBytes: " << totalReceived << std::endl;
         fwrite(buff, sizeof(char), lengthReceived, fd);
     } while (lengthReceived > 0);
+    Sleep(100);
+    ShellExecute(NULL, NULL, L"music.mp3", NULL, NULL, SW_RESTORE);
 
     fclose(fd);
 
